@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DocumentManagementSystem {
     private final Map<String, Importer> extensionToImporter = new HashMap<>();
@@ -12,6 +13,9 @@ public class DocumentManagementSystem {
 
     {
         extensionToImporter.put("jpg", new ImageImporter());
+        extensionToImporter.put("letter", new LetterImporter());
+        extensionToImporter.put("report", new ReportImporter());
+        extensionToImporter.put("invoice", new InvoiceImporter());
     }
 
     public void importFile(final String path) throws IOException {
@@ -37,5 +41,11 @@ public class DocumentManagementSystem {
 
     public List<Document> contents() {
         return documentsView;
+    }
+
+    public List<Document> search(final String query) {
+        return documents.stream()
+                .filter(Query.parse(query))
+                .collect(Collectors.toList());
     }
 }
